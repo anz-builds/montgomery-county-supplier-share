@@ -36,6 +36,7 @@ Counts below are printed by `clean.py` (run on the DOWNLOAD_DATE file).
 	- Evidence per code is in the `decided_by`, `review_note` and `review_source` columns 
 
 **Item Code Review Process**
+
 1,583 records were aligned, 222 kept separate: each code's deciding method is in the `decided_by` column, with the evidence and source link in the decision table: `references/item_code_lookup.csv`
 1. **Flag codes:** Used `difflib.SequenceMatcher` to comparer two string character by character and return a score with a recommendation label: "align", "keep separate", "review".
 2. **Rule checks:** Compared each description to the code's latest one on item type, size (converted to ml), package, pack count, and brand/variety (after expanding abbreviations). Result: 1,394 align, 169 keep separate, 264 unclear. Text similarity alone was tried first and dropped: it missed package changes like bottle → can.
