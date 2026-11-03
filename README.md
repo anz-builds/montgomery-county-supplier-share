@@ -2,6 +2,9 @@
 
 **[View the Tableau dashboard](https://public.tableau.com/app/profile/.nza/viz/MontgomeryCountyMD-A-BevDashboard/Dashboard-ShareChange)**
 
+![Share dashboard – wine](reports/figures/Dashboard-Share-Change.png)
+
+![Share dashboard – wine](reports/figures/Dashboard-Top-5_Comparison.png)
 ## Findings
 
 - **Wine's biggest shift was an acquisition, not a consumer switch:** E. & J. Gallo grew from 16.7% to 25.2% of summer wine sales (+8.5 pts) while Constellation Brands fell from 13.6% to 1.8% (-11.8 pts). Gallo bought 30+ Constellation wine brands in January 2021 ([Gallo](https://www.gallo.com/press/2021-01-05-ej-gallo-winery-completes-acquisition)). Consequently, the same brands appear under Constellation in 2019 and under Gallo in 2026.
