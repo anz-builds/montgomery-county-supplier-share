@@ -4,7 +4,7 @@
 
 ![Share dashboard – wine](reports/figures/Dashboard-Share-Change.png)
 
-![Share dashboard – wine](reports/figures/Dashboard-Top-5_Comparison.png)
+![Top 5 comparison dashboard](reports/figures/Dashboard-Top-5_Comparison.png)
 ## Findings
 
 - **Wine's biggest shift was an acquisition, not a consumer switch:** E. & J. Gallo grew from 16.7% to 25.2% of summer wine sales (+8.5 pts) while Constellation Brands fell from 13.6% to 1.8% (-11.8 pts). Gallo bought 30+ Constellation wine brands in January 2021 ([Gallo](https://www.gallo.com/press/2021-01-05-ej-gallo-winery-completes-acquisition)). Consequently, the same brands appear under Constellation in 2019 and under Gallo in 2026.
@@ -16,13 +16,13 @@
 How did supplier share of beer, wine and liquor sales in Montgomery County (MD) develop between summer 2019 and summer 2026, and what are the observed new products and the deletes? 
 
 ## Data
-- Source: Montgomery County Open Data, *Warehouse and Retail Sales* (*dataset v76h-r7br*)
+- Source: Montgomery County Open Data, *Warehouse and Retail Sales* (*dataset v76h-r7br*, [Direct Link](https://data.montgomerycountymd.gov/Community-Recreation/Warehouse-and-Retail-Sales/v76h-r7br/data_preview))
 - Downloaded: 11/02/2026 *(Data may be updated by the county in the future)*
 - Analysis window: June 2019 - August 2019 and June 2026 - August 2026
 - Categories: Beer, Wine, and Liquor
 
 ## Cleaning log
-Counts below are printed by `clean.py` (run on the DOWNLOAD_DATE file).
+Counts below are printed by `clean.py` (run on the 11/02/2026 file).
 
 | Step                                                                                                                      | Rows after |
 | ------------------------------------------------------------------------------------------------------------------------- | ---------- |
@@ -31,21 +31,21 @@ Counts below are printed by `clean.py` (run on the DOWNLOAD_DATE file).
 | Keep BEER, WINE, LIQUOR (drops KEGS 11,051 · NON-ALCOHOL 2,602 · STR_SUPPLIES 471 · REF 132 · DUNNAGE 107 · blank type 1) | 326,667    |
 | Drop blank-supplier store catch-all (item 172000, "STORE SPECIAL DISTRESSED RTD")                                         | 326,664    |
 | Drop rows where retail sales, transfers and warehouse sales are all 0                                                     | 325,619    |
-| Keep Jun–Aug 2019 and Jun–Aug 2026                                                                                        | 67,163     |
+| Keep Jun 2019 - Aug 2019 and Jun - Aug 2026                                                                               | 67,163     |
 
 **Decisions**
-- **Negatives values were kept.** Values written as *"x"* are returns/adjustments, which were converted to *"-x"* and kept for an accurate total net down. 
-- **Supplier credited at time of sale.** Sales will go towards the supplier listed in the corresponding time of sale, as crediting an item's current distributor for both 2019 and 2026 results in an inaccurate picture
-- **Text normalized.** Tabs, line breaks and redundant spaces were trimmed in supplier and description. 
-- **Item codes reviewed.** 1,827 codes had more than one description. Each was reviewed (`data/reference/item_code_review.csv`): 
+- **Negatives values were kept:** Values written as *"(x)"* are returns/adjustments, which were converted to *"-x"* and kept for an accurate total net down. 
+- **Supplier credited at time of sale:** Sales will go towards the supplier listed in the corresponding time of sale, as crediting an item's current distributor for both 2019 and 2026 results in an inaccurate picture
+- **Text normalized:** Tabs, line breaks and redundant spaces were trimmed in supplier and description. 
+- **Item codes reviewed:** 1,827 codes had more than one description. 1,805 were reviewed; the other 22 are marked *not reviewed* (`data/reference/item_code_lookup.csv`): 
 	- *align* = same product renamed (uses the latest description); 
 	- *keep separate* = the code was reused for a different product. 
-	- Evidence per code is in the `decided_by`, `review_note` and `review_source` columns 
+	- Evidence per code is in the `decided_by`, `evidence` and `source_url` columns 
 
 **Item Code Review Process**
 
-1,583 records were aligned, 222 kept separate: each code's deciding method is in the `decided_by` column, with the evidence and source link in the decision table: `references/item_code_lookup.csv`
-1. **Flag codes:** Used `difflib.SequenceMatcher` to comparer two string character by character and return a score with a recommendation label: "align", "keep separate", "review".
+1,583 records were aligned, 222 kept separate: each code's deciding method is in the `decided_by` column, with the evidence and source link in the decision table: `data/reference/item_code_lookup.csv`
+1. **Flag codes:** Used `difflib.SequenceMatcher` to compare two strings character by character and return a score with a recommendation label: "align", "keep separate", "review".
 2. **Rule checks:** Compared each description to the code's latest one on item type, size (converted to ml), package, pack count, and brand/variety (after expanding abbreviations). Result: 1,394 align, 169 keep separate, 264 unclear. Text similarity alone was tried first and dropped: it missed package changes like bottle → can.
 3. **Web checks:** For unclear codes active in summer 2019 or 2026, searched for a rename or a distinct product, then checked whether the differing words appear on the other product's own page (e.g. "Madeira finished" on the Limited Release gin page). A search with no result was treated as unclear, not as "different."
 4. **Primary sources and own data:** Checked the TTB label registry (COLA) for beer, spirits and sangria, and archived producer pages (Wayback Machine) for wines. In the data itself, an old name still selling under another code marked two separate products.
@@ -55,9 +55,44 @@ Counts below are printed by `clean.py` (run on the DOWNLOAD_DATE file).
 ## Data gaps
 The dataset covers Jun 2017 - Feb 2018, Jan 2019 - Nov 2019, Jan/Mar/Jul/Sep 2020, and Jun - Aug 2026. **Nothing exists for 2021–2025**, so this is a two-point comparison, not a trend.
 
-## Re-run
+## Initial Cleaning Run:
+### Option 1: Python (clean.py)  
+
 ```
 pip install -r requirements.txt
 python clean.py            # downloads the latest data
 python clean.py file.csv   # or use a file you already have
 ```
+### Option 2: SQL (sql/clean.sql)  
+
+The same cleaning steps are also written in SQLite, in `sql/clean.sql`. `sql/run_clean.py` loads the raw CSV and the item-code lookup into a local SQLite database (`data/sales.db`) and runs the SQL file. Then it saves the result to `data/clean/sales_clean_sql.csv`.
+
+```
+pip install -r requirements.txt
+python sql/run_clean.py
+```
+
+- **If rerunning:** Delete `data/sales.db` before running it again, because the SQL creates its tables fresh.
+- **Verification:** the SQL output matches `clean.py` exactly: 67,163 rows, the same product keys and the same sales totals.
+
+
+How the SQL handles what pandas does with regex:
+- **Negatives:** `CASE WHEN … LIKE '(%)'` turns `(0.17)` into `-0.17`.
+- **Extra spaces:** SQLite has no regex replace, so the SQL replaces every double space with a single space, five passes in a row, to collapse longer runs.
+- **Product key:** a `LEFT JOIN` to `item_code_lookup.csv` on item code + description. `COALESCE` falls back to the row’s own description for codes that weren’t reviewed.
+
+Applying the item-code review: renamed products roll up under one key, and codes that weren't reviewed keep their own description.
+```sql
+-- Product key: apply the item-code review
+-- align -> the code's latest description; keep separate or not reviewed -> the row's own description
+CREATE TABLE sales_clean AS
+SELECT s.YEAR, s.MONTH, s.SUPPLIER, s."ITEM CODE",
+  s."ITEM CODE" || ' | ' || COALESCE(l.product_description, UPPER(s."ITEM DESCRIPTION")) AS product_key,
+  COALESCE(l.product_description, UPPER(s."ITEM DESCRIPTION")) AS product_description,
+  s."ITEM TYPE", s."RETAIL SALES", s."RETAIL TRANSFERS", s."WAREHOUSE SALES"
+FROM step2 s
+LEFT JOIN lookup l
+  ON l.item_code = s."ITEM CODE"
+ AND l.description = UPPER(s."ITEM DESCRIPTION");
+```
+

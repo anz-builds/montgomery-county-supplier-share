@@ -10,7 +10,7 @@ from datetime import date
 import pandas as pd
 
 URL = "https://data.montgomerycountymd.gov/api/views/v76h-r7br/rows.csv?accessType=DOWNLOAD"
-REVIEW = "data/reference/item_code_review.csv"
+LOOKUP = "data/reference/item_code_lookup.csv"
 OUT = "data/clean/sales_clean.csv"
 NUM = ["RETAIL SALES", "RETAIL TRANSFERS", "WAREHOUSE SALES"]
 TEXT = ["SUPPLIER", "ITEM DESCRIPTION"]
@@ -59,17 +59,15 @@ df = log("4b. drop blank-SUPPLIER store catch-all rows", df[~blank_sup])
 # 5. Drop all-zero rows
 df = log("5. drop rows where all three measures are 0", df[(df[NUM].fillna(0) != 0).any(axis=1)])
 
-# 6. Product key from the item-code review
-#    align -> latest_description; keep separate -> the row's own description
-rev = pd.read_csv(REVIEW, dtype={"item_code": str}, keep_default_na=False)
-rev = rev[["item_code", "decision", "latest_description"]]
+# 6. Product key from the item-code lookup (one row per code + description)
+#    align -> the code's latest description; keep separate or not in lookup -> the row's own description
+lk = pd.read_csv(LOOKUP, dtype={"item_code": str}, keep_default_na=False)
+lk = lk[["item_code", "description", "decision", "product_description"]]
 df["desc_upper"] = df["ITEM DESCRIPTION"].str.upper()
-df = df.merge(rev, left_on="ITEM CODE", right_on="item_code", how="left")
-df["product_description"] = df["desc_upper"]
-use_latest = df["decision"] == "align"
-df.loc[use_latest, "product_description"] = df.loc[use_latest, "latest_description"]
+df = df.merge(lk, left_on=["ITEM CODE", "desc_upper"], right_on=["item_code", "description"], how="left")
+df["product_description"] = df["product_description"].fillna(df["desc_upper"])
 df["product_key"] = df["ITEM CODE"] + " | " + df["product_description"]
-print(f"   rows on reviewed codes: align {int(use_latest.sum()):,}, "
+print(f"   rows on reviewed codes: align {int((df['decision'] == 'align').sum()):,}, "
       f"keep separate {int((df['decision'] == 'keep separate').sum()):,}")
 
 # 7. Decisions: negatives kept (step 1); supplier credited at time of sale (no remap)
