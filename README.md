@@ -1,10 +1,14 @@
 # Montgomery County Supplier Share: Summer 2019 vs Summer 2026
 
-**[View the Tableau dashboard](TABLEAU_PUBLIC_LINK)**
+**[View the Tableau dashboard](https://public.tableau.com/app/profile/.nza/viz/MontgomeryCountyMD-A-BevDashboard/Dashboard-ShareChange)**
 
 ## Findings
-<!-- 3–5 bullets: the headline share shifts, top gainers/losers, add/drop highlights, a modest recommendation -->
 
+- **Wine's biggest shift was an acquisition, not a consumer switch:** E. & J. Gallo grew from 16.7% to 25.2% of summer wine sales (+8.5 pts) while Constellation Brands fell from 13.6% to 1.8% (-11.8 pts). Gallo bought 30+ Constellation wine brands in January 2021 ([Gallo](https://www.gallo.com/press/2021-01-05-ej-gallo-winery-completes-acquisition)). Consequently, the same brands appear under Constellation in 2019 and under Gallo in 2026.
+- **For Beer, Crown Imports took the lead:** Crown Imports rose from 17.6% to 22.2% (+4.6 pts) and Boston Beer from 7.8% to 10.4% (+2.6 pts), while Anheuser-Busch (-2.8), Miller (-1.7) and Heineken (-1.7) lost share.
+- **Liquor: Sazerac is the biggest gainer.** Sazerac grew from 8.8% to 14.6% (+5.9 pts); Jim Beam (-5.0) and Diageo (-3.7) lost the most.
+- **Concentration held steady, while the leaders reshuffled:** The top 5 suppliers' combined share barely moved beer 67.6% → 68.6%, liquor 45.5% → 44.9%, wine 51.1% → 48.9%. Share moved between the big suppliers rather than to or from smaller ones.
+- **Recommendation:** When reading supplier share across years, separate ownership changes (acquisitions/switching distributors) from real shifts in what shoppers buy. Here, the largest wine swing comes from a deal, while the beer and liquor gains (Crown, Sazerac) are the shifts worth investigating for assortment and promo planning.
 ## Question
 How did supplier share of beer, wine and liquor sales in Montgomery County (MD) develop between summer 2019 and summer 2026, and what are the observed new products and the deletes? 
 
