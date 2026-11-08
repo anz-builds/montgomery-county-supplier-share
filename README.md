@@ -2,17 +2,18 @@
 
 **[View the Tableau dashboard](https://public.tableau.com/app/profile/.nza/viz/MontgomeryCountyMD-A-BevDashboard/Dashboard-ShareChange)**
 
-![Assortment and share change dashboard](reports/figures/Dashboard-Share-Change.png)
+![Stacked bars of kept, added and dropped products per supplier, above bars of share change in points](reports/figures/Dashboard-Share-Change.png)
 
-![Top 5 comparison dashboard](reports/figures/Dashboard-Top-5_Comparison.png)
+![Slope chart of supplier share 2019 vs 2026, above a table of the top 5 suppliers' shares](reports/figures/Dashboard-Top-5_Comparison.png)
 ## Findings
 
 - **Wine's biggest shift was an acquisition, not a consumer switch:** E. & J. Gallo grew from 16.7% to 25.2% of summer wine sales (+8.5 pts) while Constellation Brands fell from 13.6% to 1.8% (-11.8 pts). Gallo bought 30+ Constellation wine brands in January 2021 ([Gallo](https://www.gallo.com/press/2021-01-05-ej-gallo-winery-completes-acquisition)). Consequently, the same brands appear under Constellation in 2019 and under Gallo in 2026.
-- **For Beer, Crown Imports took the lead:** Crown Imports rose from 17.6% to 22.2% (+4.6 pts) and Boston Beer from 7.8% to 10.4% (+2.6 pts), while Anheuser-Busch (-2.8), Miller (-1.7) and Heineken (-1.7) lost share.
-- **Liquor: Sazerac is the biggest gainer.** Sazerac grew from 8.8% to 14.6% (+5.9 pts); Jim Beam (-5.0) and Diageo (-3.7) lost the most.
-- **Assortment: liquor's growth came from new products, beer's leader grew on existing ones:** 41.4% of summer 2026 liquor sales came from products not sold in summer 2019, vs 18.0% for beer and 19.1% for wine. Sazerac, the top liquor gainer, got 42.8% of its 2026 sales from new products, and Boston Beer 47.8%. Crown Imports, the top beer gainer, got only 3.1%, so its gain came from products it already sold.
-- **Concentration: beer and wine held steady, liquor spread out:** Each year's own top 5 suppliers held 67.6% → 68.6% of beer sales, 51.5% → 51.9% of wine and 48.3% → 45.0% of liquor ([concentration ratio](https://en.wikipedia.org/wiki/Concentration_ratio)). Wine's top 5 changed members (Constellation out, Jackson Family in), and liquor's top 5 lost 3.3 pts to smaller suppliers. The dashboard's Top 5 Suppliers table instead holds one set of 5 suppliers, picked by combined 2019 + 2026 sales, for both years.
-- **Recommendation:** When reading supplier share across years, separate ownership changes (acquisitions/switching distributors) from real shifts in what shoppers buy. Here, the largest wine swing comes from a deal, while the beer and liquor gains (Crown, Sazerac) are the shifts worth investigating for assortment and promo planning.
+- **Beer: Crown Imports widened its lead:** Crown Imports rose from 17.6% to 22.2% (+4.6 pts). Boston Beer's +2.6 pts (7.8% → 10.4%) comes from absorbing Dogfish Head, a deal that closed July 3, 2019 ([Boston Beer 8-K](https://www.sec.gov/Archives/edgar/data/949870/000156459019024521/sam-8k_20190703.htm)); combined, the two went 11.1% → 10.4% (-0.7). Anheuser-Busch (-2.8), Miller (-1.7) and Heineken (-1.6) lost share. Flying Dog's -4.1 pts is partly an ownership change: FX Matt Brewing bought it in May 2023 ([Brewbound](https://www.brewbound.com/news/fx-matt-to-acquire-flying-dog-creating-top-10-ba-defined-craft-brewery)), and combined, the two went 4.1% → 1.5% (-2.6).
+- **Liquor: Anheuser-Busch is the biggest gainer:** Anheuser-Busch went from 0% to 6.2% (+6.2 pts), almost all Cutwater canned cocktails; it bought Cutwater in February 2019 ([BevNet](https://www.bevnet.com/news/2019/anheuser-busch-to-acquire-fast-growing-cutwater-spirits)). Sazerac grew from 8.7% to 14.6% (+5.9 pts). Jim Beam (-5.0) and Diageo (-3.7) lost the most.
+- **Assortment: liquor's top gainers grew on new products, beer's leader on existing ones:** 41.4% of summer 2026 liquor sales came from products not sold in summer 2019, vs 18.0% for beer and 19.1% for wine. Sazerac got 42.8% of its 2026 sales from new products, and Boston Beer 47.8%. Crown Imports got only 3.1%, so its gain came from products it already sold. On the delete side, products later dropped made up 17.4% of summer 2019 beer sales, 14.8% of wine and 11.7% of liquor.
+- **Concentration: beer and wine held steady, liquor spread out:** Each year's own top 5 suppliers held 67.6% → 68.6% of beer sales, 51.5% → 51.9% of wine and 48.3% → 45.0% of liquor ([concentration ratio](https://en.wikipedia.org/wiki/Concentration_ratio)). Wine's top 5 swapped two members (Constellation and Treasury out, Deutsch and Jackson in), and so did liquor's (Bacardi and Heaven Hill out, Gallo and Anheuser-Busch in). Liquor's top 5 lost 3.4 pts to smaller suppliers. The dashboard's Top 5 Suppliers table instead holds one set of 5 suppliers, picked by combined 2019 + 2026 sales, for both years.
+- **Beer and wine shrank, liquor held:** Summer retail sales fell 45.0% for beer and 43.0% for wine, and rose 1.9% for liquor. Shares are measured within each type, so a share gain can still mean fewer dollars.
+- **Recommendation:** When reading supplier share across years, separate ownership changes (acquisitions/switching distributors) from real shifts in what shoppers buy. Here, the largest wine swing (Gallo/Constellation), Boston Beer's gain (Dogfish Head) and Flying Dog's drop (FX Matt) come from deals, while Crown, Sazerac and Cutwater are the shifts worth investigating for assortment and promo planning.
 ## Question
 How did supplier share of beer, wine and liquor sales in Montgomery County (MD) develop between summer 2019 and summer 2026, and what are the observed new products and the deletes? 
 
@@ -37,6 +38,8 @@ Counts below are printed by `clean.py` (run on the 11/02/2026 file).
 **Decisions**
 - **Negatives values were kept:** Values written as *"(x)"* are returns/adjustments, which were converted to *"-x"* and kept for an accurate total net down. 
 - **Supplier credited at time of sale:** Sales will go towards the supplier listed in the corresponding time of sale, as crediting an item's current distributor for both 2019 and 2026 results in an inaccurate picture
+- **Sales measure:** Shares use `RETAIL SALES`. `WAREHOUSE SALES` gives very different results (e.g. Sazerac -10.5 pts instead of +5.9).
+- **Supplier renames merged:** `FIFTH GENERATION INC` → `FIFTH GENERATION DISTILLED SPIRITS, INC` (same item codes). Ownership changes are not merged; they're called out in Findings.
 - **Text normalized:** Tabs, line breaks and redundant spaces were trimmed in supplier and description. 
 - **Item codes reviewed:** 1,827 codes had more than one description. 1,805 were reviewed; the other 22 are marked *not reviewed* (`data/reference/item_code_lookup.csv`): 
 	- *align* = same product renamed (uses the latest description); 

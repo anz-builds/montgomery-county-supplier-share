@@ -56,6 +56,11 @@ blank_sup = df["SUPPLIER"] == ""
 print("   blank-SUPPLIER rows:", df.loc[blank_sup, "ITEM DESCRIPTION"].value_counts().to_dict())
 df = log("4b. drop blank-SUPPLIER store catch-all rows", df[~blank_sup])
 
+# 4c. Merge supplier renames (same company, same item codes)
+RENAMES = {"FIFTH GENERATION INC": "FIFTH GENERATION DISTILLED SPIRITS, INC"}
+print("   supplier renames merged:", {k: int((df["SUPPLIER"] == k).sum()) for k in RENAMES})
+df["SUPPLIER"] = df["SUPPLIER"].replace(RENAMES)
+
 # 5. Drop all-zero rows
 df = log("5. drop rows where all three measures are 0", df[(df[NUM].fillna(0) != 0).any(axis=1)])
 
