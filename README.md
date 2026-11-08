@@ -2,7 +2,7 @@
 
 **[View the Tableau dashboard](https://public.tableau.com/app/profile/.nza/viz/MontgomeryCountyMD-A-BevDashboard/Dashboard-ShareChange)**
 
-![Share dashboard – wine](reports/figures/Dashboard-Share-Change.png)
+![Assortment and share change dashboard](reports/figures/Dashboard-Share-Change.png)
 
 ![Top 5 comparison dashboard](reports/figures/Dashboard-Top-5_Comparison.png)
 ## Findings
@@ -10,7 +10,8 @@
 - **Wine's biggest shift was an acquisition, not a consumer switch:** E. & J. Gallo grew from 16.7% to 25.2% of summer wine sales (+8.5 pts) while Constellation Brands fell from 13.6% to 1.8% (-11.8 pts). Gallo bought 30+ Constellation wine brands in January 2021 ([Gallo](https://www.gallo.com/press/2021-01-05-ej-gallo-winery-completes-acquisition)). Consequently, the same brands appear under Constellation in 2019 and under Gallo in 2026.
 - **For Beer, Crown Imports took the lead:** Crown Imports rose from 17.6% to 22.2% (+4.6 pts) and Boston Beer from 7.8% to 10.4% (+2.6 pts), while Anheuser-Busch (-2.8), Miller (-1.7) and Heineken (-1.7) lost share.
 - **Liquor: Sazerac is the biggest gainer.** Sazerac grew from 8.8% to 14.6% (+5.9 pts); Jim Beam (-5.0) and Diageo (-3.7) lost the most.
-- **Concentration held steady, while the leaders reshuffled:** The top 5 suppliers' combined share barely moved beer 67.6% → 68.6%, liquor 45.5% → 44.9%, wine 51.1% → 48.9%. Share moved between the big suppliers rather than to or from smaller ones.
+- **Assortment: liquor's growth came from new products, beer's leader grew on existing ones:** 41.4% of summer 2026 liquor sales came from products not sold in summer 2019, vs 18.0% for beer and 19.1% for wine. Sazerac, the top liquor gainer, got 42.8% of its 2026 sales from new products, and Boston Beer 47.8%. Crown Imports, the top beer gainer, got only 3.1%, so its gain came from products it already sold.
+- **Concentration: beer and wine held steady, liquor spread out:** Each year's own top 5 suppliers held 67.6% → 68.6% of beer sales, 51.5% → 51.9% of wine and 48.3% → 45.0% of liquor ([concentration ratio](https://en.wikipedia.org/wiki/Concentration_ratio)). Wine's top 5 changed members (Constellation out, Jackson Family in), and liquor's top 5 lost 3.3 pts to smaller suppliers. The dashboard's Top 5 Suppliers table instead holds one set of 5 suppliers, picked by combined 2019 + 2026 sales, for both years.
 - **Recommendation:** When reading supplier share across years, separate ownership changes (acquisitions/switching distributors) from real shifts in what shoppers buy. Here, the largest wine swing comes from a deal, while the beer and liquor gains (Crown, Sazerac) are the shifts worth investigating for assortment and promo planning.
 ## Question
 How did supplier share of beer, wine and liquor sales in Montgomery County (MD) develop between summer 2019 and summer 2026, and what are the observed new products and the deletes? 
@@ -41,10 +42,11 @@ Counts below are printed by `clean.py` (run on the 11/02/2026 file).
 	- *align* = same product renamed (uses the latest description); 
 	- *keep separate* = the code was reused for a different product. 
 	- Evidence per code is in the `decided_by`, `evidence` and `source_url` columns 
+- **Product status (Kept / Added / Dropped):** a product is *Kept* if its product key sells in both summers, *Added* if only in 2026, *Dropped* if only in 2019. Calculated in Tableau with a FIXED LOD on `product_key`.
 
 **Item Code Review Process**
 
-1,583 records were aligned, 222 kept separate: each code's deciding method is in the `decided_by` column, with the evidence and source link in the decision table: `data/reference/item_code_lookup.csv`
+1,583 codes were aligned, 222 kept separate: each code's deciding method is in the `decided_by` column, with the evidence and source link in the decision table: `data/reference/item_code_lookup.csv`
 1. **Flag codes:** Used `difflib.SequenceMatcher` to compare two strings character by character and return a score with a recommendation label: "align", "keep separate", "review".
 2. **Rule checks:** Compared each description to the code's latest one on item type, size (converted to ml), package, pack count, and brand/variety (after expanding abbreviations). Result: 1,394 align, 169 keep separate, 264 unclear. Text similarity alone was tried first and dropped: it missed package changes like bottle → can.
 3. **Web checks:** For unclear codes active in summer 2019 or 2026, searched for a rename or a distinct product, then checked whether the differing words appear on the other product's own page (e.g. "Madeira finished" on the Limited Release gin page). A search with no result was treated as unclear, not as "different."
